@@ -15,7 +15,17 @@ object BlockHeader extends BtcSerializer[BlockHeader] {
     val time = uint32(input)
     val bits = uint32(input)
     val nonce = uint32(input)
-    BlockHeader(version, hashPreviousBlock, hashMerkleRoot, time, bits, nonce)
+
+
+    val hashStateRoot = hash(input)
+    val hashUTXORoot = hash(input)
+    val prev_stake_hash = hash(input)
+    val prev_stake_n = uint32(input)
+    val sizeVchSig = uint8(input)
+    val vchSig = bytes(input, sizeVchSig)
+
+    BlockHeader(version, hashPreviousBlock, hashMerkleRoot, time, bits, nonce, hashStateRoot,
+      hashUTXORoot, prev_stake_hash, prev_stake_n, sizeVchSig, vchSig.toArray)
   }
 
   override def write(input: BlockHeader, out: OutputStream, protocolVersion: Long) = {
@@ -25,6 +35,13 @@ object BlockHeader extends BtcSerializer[BlockHeader] {
     writeUInt32(input.time.toInt, out)
     writeUInt32(input.bits.toInt, out)
     writeUInt32(input.nonce.toInt, out)
+
+    writeBytes(input.hashStateRoot.toArray, out)
+    writeBytes(input.hashUTXORoot.toArray, out)
+    writeBytes(input.prev_stake_hash.toArray, out)
+    writeUInt32(input.prev_stake_n.toInt, out)
+    writeUInt8(input.sizeVchSig, out)
+    writeBytes(input.vchSig, out)
   }
 
   def getDifficulty(header: BlockHeader): BigInteger = {
@@ -91,8 +108,16 @@ object BlockHeader extends BtcSerializer[BlockHeader] {
   * @param time              A timestamp recording when this block was created (Will overflow in 2106[2])
   * @param bits              The calculated difficulty target being used for this block
   * @param nonce             The nonce used to generate this block… to allow variations of the header and compute different hashes
+  * @param hashStateRoot
+  * @param hashUTXORoot
+  * @param prev_stake_hash
+  * @param prev_stake_n
+  * @param sizeVchSig
+  * @param vchSig
   */
-case class BlockHeader(version: Long, hashPreviousBlock: ByteVector32, hashMerkleRoot: ByteVector32, time: Long, bits: Long, nonce: Long) extends BtcSerializable[BlockHeader] {
+case class BlockHeader(version: Long, hashPreviousBlock: ByteVector32, hashMerkleRoot: ByteVector32, time: Long, bits: Long, nonce: Long,
+                       hashStateRoot: ByteVector32, hashUTXORoot: ByteVector32, prev_stake_hash: ByteVector32,
+                       prev_stake_n: Long, sizeVchSig: Int, vchSig: Array[Byte]) extends BtcSerializable[BlockHeader] {
   lazy val hash: ByteVector32 = Crypto.hash256(BlockHeader.write(this))
 
   // hash is reversed here (same as tx id)
@@ -126,10 +151,13 @@ object Block extends BtcSerializer[Block] {
 
   // genesis blocks
   val LivenetGenesisBlock = {
-    val script = OP_PUSHDATA(writeUInt32(486604799L)) :: OP_PUSHDATA(hex"04") :: OP_PUSHDATA(ByteVector("The Times 03/Jan/2009 Chancellor on brink of second bailout for banks".getBytes("UTF-8"))) :: Nil
-    val scriptPubKey = OP_PUSHDATA(hex"04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") :: OP_CHECKSIG :: Nil
+    val script = OP_PUSHDATA(writeUInt32(488804799L)) :: OP_PUSHDATA(hex"04") :: OP_PUSHDATA(ByteVector("Sep 02, 2017 Bitcoin breaks $5,000 in latest price frenzy".getBytes("UTF-8"))) :: Nil
+    val scriptPubKey = OP_PUSHDATA(hex"040d61d8653448c98731ee5fffd303c15e71ec2057b77f11ab3601979728cdaff2d68afbba14e4fa0bc44f2072b0b23ef63717f8cdfbe58dcd33f32b6afe98741a") :: OP_CHECKSIG :: Nil
     Block(
-      BlockHeader(version = 1, hashPreviousBlock = ByteVector32.Zeroes, hashMerkleRoot = ByteVector32(hex"3ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a"), time = 1231006505, bits = 0x1d00ffff, nonce = 2083236893),
+      BlockHeader(version = 1, hashPreviousBlock = ByteVector32.Zeroes, hashMerkleRoot = ByteVector32(hex"6db905142382324db417761891f2d2f355ea92f27ab0fc35e59e90b50e0534ed"), time = 1504695029, bits = 0x1f00ffff, nonce = 8026361,
+        hashStateRoot = ByteVector32(hex"e965ffd002cd6ad0e2dc402b8044de833e06b23127ea8c3d80aec91410771495"),
+        hashUTXORoot = ByteVector32(hex"56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421"),
+        prev_stake_hash = ByteVector32.Zeroes, prev_stake_n = 0xffffffff, sizeVchSig = 0, vchSig = Array()),
       List(
         Transaction(version = 1,
           txIn = List(TxIn.coinbase(script)),
@@ -138,9 +166,9 @@ object Block extends BtcSerializer[Block] {
     )
   }
 
-  val TestnetGenesisBlock = LivenetGenesisBlock.copy(header = LivenetGenesisBlock.header.copy(time = 1296688602, nonce = 414098458))
+  val TestnetGenesisBlock = LivenetGenesisBlock.copy(header = LivenetGenesisBlock.header.copy(time = 1504695029, nonce = 7349697))
 
-  val RegtestGenesisBlock = LivenetGenesisBlock.copy(header = LivenetGenesisBlock.header.copy(bits = 0x207fffffL, nonce = 2, time = 1296688602))
+  val RegtestGenesisBlock = LivenetGenesisBlock.copy(header = LivenetGenesisBlock.header.copy(bits = 0x207fffffL, nonce = 17, time = 1504695029))
 
   val SegnetGenesisBlock = LivenetGenesisBlock.copy(header = LivenetGenesisBlock.header.copy(bits = 503447551, time = 1452831101, nonce = 0))
 
