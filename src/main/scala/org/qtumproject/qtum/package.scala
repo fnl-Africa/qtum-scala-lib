@@ -166,9 +166,9 @@ package object qtum {
   def computeP2WpkhAddress(pub: PublicKey, chainHash: ByteVector32): String = {
     val hash = pub.hash160
     val hrp = chainHash match {
-      case Block.LivenetGenesisBlock.hash => "bc"
-      case Block.TestnetGenesisBlock.hash => "tb"
-      case Block.RegtestGenesisBlock.hash => "bcrt"
+      case Block.LivenetGenesisBlock.hash => "qc"
+      case Block.TestnetGenesisBlock.hash => "tq"
+      case Block.RegtestGenesisBlock.hash => "qcrt"
       case _ => throw new IllegalArgumentException("Unknown chain hash: " + chainHash)
     }
     Bech32.encodeWitnessAddress(hrp, 0, hash)

@@ -42,12 +42,10 @@ class Bech32Spec extends FunSuite {
 
   test("decode addresses") {
     val inputs = Seq(
-      "BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4" -> "0014751e76e8199196d454941c45d1b3a323f1433bd6",
-      "tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7" -> "00201863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262",
-      "bc1pw508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7k7grplx" -> "8128751e76e8199196d454941c45d1b3a323f1433bd6751e76e8199196d454941c45d1b3a323f1433bd6",
-      "BC1SW50QA3JX3S" -> "9002751e",
-      "bc1zw508d6qejxtdg4y5r3zarvaryvg6kdaj" -> "8210751e76e8199196d454941c45d1b3a323",
-      "tb1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesrxh6hy" -> "0020000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433"
+      "QC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KQ52AT0" -> "0014751e76e8199196d454941c45d1b3a323f1433bd6",
+      "tq1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qucc3th" -> "00201863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262",
+      "tq1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesswsl2d" -> "0020000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433",
+      "qc1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvses8mexl8" -> "0020000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433"
     )
     inputs.map {
       case (address, bin) =>
@@ -57,25 +55,25 @@ class Bech32Spec extends FunSuite {
   }
 
   test("create addresses") {
-    assert(Bech32.encodeWitnessAddress("bc", 0, hex"751e76e8199196d454941c45d1b3a323f1433bd6") == "BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4".toLowerCase)
-    assert(Bech32.encodeWitnessAddress("tb", 0, hex"1863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262") == "tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7")
-    assert(Bech32.encodeWitnessAddress("tb", 0, hex"000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433") == "tb1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesrxh6hy")
+    assert(Bech32.encodeWitnessAddress("qc", 0, hex"751e76e8199196d454941c45d1b3a323f1433bd6") == "QC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KQ52AT0".toLowerCase)
+    assert(Bech32.encodeWitnessAddress("tq", 0, hex"1863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262") == "tq1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3qucc3th")
+    assert(Bech32.encodeWitnessAddress("tq", 0, hex"000000c4a5cad46221b2a187905e5266362b99d5e91c6ce24d165dab93e86433") == "tq1qqqqqp399et2xygdj5xreqhjjvcmzhxw4aywxecjdzew6hylgvsesswsl2d")
   }
 
   test("reject invalid addresses") {
     val addresses = Seq(
       "tc1qw508d6qejxtdg4y5r3zarvary0c5xw7kg3g4ty",
-      "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5",
-      "BC13W508D6QEJXTDG4Y5R3ZARVARY0C5XW7KN40WF2",
-      "bc1rw5uspcuh",
-      "bc10w508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kw5rljs90",
-      "bca0w508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kw5rljs90234567789035",
-      "BC1QR508D6QEJXTDG4Y5R3ZARVARYV98GJ9P",
-      "tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sL5k7",
-      "bc1zw508d6qejxtdg4y5r3zarvaryvqyzf3du",
-      "tb1pw508d6qejxtdg4y5r3zarqfsj6c3",
-      "tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3pjxtptv",
-      "bc1gmk9yu"
+      "qc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t5",
+      "QC13W508D6QEJXTDG4Y5R3ZARVARY0C5XW7KN40WF2",
+      "qc1rw5uspcuh",
+      "qc10w508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kw5rljs90",
+      "qca0w508d6qejxtdg4y5r3zarvary0c5xw7kw508d6qejxtdg4y5r3zarvary0c5xw7kw5rljs90234567789035",
+      "QC1QR508D6QEJXTDG4Y5R3ZARVARYV98GJ9P",
+      "tq1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sL5k7",
+      "Qc1zw508d6qejxtdg4y5r3zarvaryvqyzf3du",
+      "tq1pw508d6qejxtdg4y5r3zarqfsj6c3",
+      "tq1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3pjxtptv",
+      "qc1gmk9yu"
     )
     addresses.map(address => {
       intercept[Exception] {
