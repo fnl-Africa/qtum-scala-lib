@@ -103,7 +103,7 @@ class TransactionSpec extends FunSuite with Matchers {
     // this is the public key that is associated to the private key we used for signing
     val publicKey = privateKey.publicKey
     // we check that is really is the public key that is encoded) the address the previous tx was paid to
-    val providedHash = Base58Check.decode("mhW1BQDyhbTsnHEuB1n7yuj9V81TbeRfTY")._2
+    val providedHash = Base58Check.decode("qKYS3Nua6Ddm9BVgPnmzM3BE9fKx4RuGT7")._2
     val computedHash = publicKey.hash160
     assert(providedHash == computedHash)
 
@@ -122,9 +122,10 @@ class TransactionSpec extends FunSuite with Matchers {
     // check script
     Transaction.correctlySpends(tx2, Seq(previousTx), ScriptFlags.MANDATORY_SCRIPT_VERIFY_FLAGS)
   }
+  
   // same as above, but using Transaction.sign())stead of signing the tx manually
   test("create and verify pay2pk transactions with 1)put/1 output using helper method") {
-    val to = "mi1cMMSL9BZwTQZYpweE1nTmwRxScirPp3"
+    val to = "qL43DL7vXojppJpL3ie6NuurbyGvw5zpnN"
     val (Base58.Prefix.PubkeyAddressTestnet, pubkeyHash) = Base58Check.decode(to)
     val amount = 10000 satoshi
 
@@ -156,11 +157,12 @@ class TransactionSpec extends FunSuite with Matchers {
     // redeem the tx
     Transaction.correctlySpends(tx2, Seq(previousTx), ScriptFlags.MANDATORY_SCRIPT_VERIFY_FLAGS)
   }
+
   test("create and verify sign pay2pk transactions with multiple)puts and outputs") {
-    val destAddress = "moKHwpsxovDtfBJyoXpof21vvWooBExutV"
+    val destAddress = "qRMiooZZCYPn25Zm2Jpg29U1b48HZEUEFw"
     val destAmount = 3000000 satoshi
 
-    val changeAddress = "mvHPesWqLXXy7hntNa7vbAoVwqN5PnrwJd"
+    val changeAddress = "qYKpWrCRj9hrUc3fbM7nxJFacNgZpYwgN4"
     val changeAmount = 1700000 satoshi
 
     val previousTx = List(
