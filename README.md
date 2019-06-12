@@ -1,12 +1,12 @@
-# Simple Scala Bitcoin Library
+# Simple Scala Qtum Library
 
-Simple bitcoin library written in Scala.
+Simple qtum library written in Scala.
 
 [![Build Status](https://travis-ci.org/ACINQ/bitcoin-lib.png)](https://travis-ci.org/ACINQ/bitcoin-lib)
 
 ## Overview
 
-This is a simple scala library which implements most of the bitcoin protocol:
+This is a simple scala library which implements most of the qtum protocol:
 
 * base58 encoding/decoding
 * block headers, block and tx parsing
@@ -20,7 +20,7 @@ This is a simple scala library which implements most of the bitcoin protocol:
 
 ## Objectives
 
-Our goal is not to re-implement a full Bitcoin node but to build a library that can be used to build applications that rely on bitcoind to interface with the Bitcoin network (to retrieve and index transactions and blocks, for example...). We use it very often to build quick prototypes and test new ideas. Besides, some parts of the protocole are fairly simple and "safe" to re-implement (BIP32/BIP39 for example), especially for indexing/analysis purposes. And, of course, we use it for our own work on Lightning (see https://github.com/ACINQ/eclair).
+Our goal is not to re-implement a full qtum node but to build a library that can be used to build applications that rely on qtumd to interface with the qtum network (to retrieve and index transactions and blocks, for example...). We use it very often to build quick prototypes and test new ideas. Besides, some parts of the protocole are fairly simple and "safe" to re-implement (BIP32/BIP39 for example), especially for indexing/analysis purposes. And, of course, we use it for our own work on Lightning (see https://github.com/ACINQ/eclair).
 
 ## Status
 - [X] Message parsing (blocks, transactions, inv, ...)
@@ -46,7 +46,7 @@ Our goal is not to re-implement a full Bitcoin node but to build a library that 
 <dependencies>
   <dependency>
     <groupId>fr.acinq</groupId>
-    <artifactId>bitcoin-lib_2.11</artifactId>
+    <artifactId>qtum-lib_2.11</artifactId>
     <version>0.11</version>
   </dependency>
 </dependencies>
@@ -56,11 +56,11 @@ The latest snapshot (development) version is 0.12-SNAPSHOT, the latest released 
 
 ## Segwit support
 
-Bitcoin-lib, starting with version 0.9.7, fully supports segwit (see below for more information) and is on par with the segwit code in Bitcoin Core 0.13.1.
+qtum-lib, starting with version 0.9.7, fully supports segwit (see below for more information) and is on par with the segwit code in qtum Core 0.13.1.
 
 ## libscp256k1 support
 
-bitcoin-lib embeds JNI bindings for libsecp256k1, which is must faster than BouncyCastle. It will extract and load native bindings for your operating system
+qtum-lib embeds JNI bindings for libsecp256k1, which is must faster than BouncyCastle. It will extract and load native bindings for your operating system
 in a temporary directory. If this process fails it will fallback to BouncyCastle.
 
 JNI libraries are included for:
@@ -69,7 +69,7 @@ JNI libraries are included for:
 - Osx 64 bits
 
 You can use your own library native library by specifying its path with `-Dfr.acinq.secp256k1.lib.path` and optionally its name with `-Dfr.acinq.secp256k1.lib.name` (if unspecified
-bitcoin-lib will use the standard name for your OS i.e. libsecp256k1.so on Linux, secp256k1.dll on Windows, ...)
+qtum-lib will use the standard name for your OS i.e. libsecp256k1.so on Linux, secp256k1.dll on Windows, ...)
 
 You can also specify the temporary directory where the library will be extracted with `-Djava.io.tmpdir` or `-Dfr.acinq.secp256k1.tmpdir` (if you want to use a different
 directory from `-Djava.io.tmpdir`).
@@ -92,26 +92,26 @@ The following REPL session shows how to create and use keys and addresses:
 ```shell
 
 mvn scala:console
-scala> import fr.acinq.bitcoin._
-import fr.acinq.bitcoin._
+scala> import org.qtumproject.qtum._
+import org.qtumproject.qtum._
 
-scala> import fr.acinq.bitcoin.Crypto._
-import fr.acinq.bitcoin.Crypto._
+scala> import org.qtumproject.qtum.Crypto._
+import org.qtumproject.qtum.Crypto._
 
 scala> val priv = PrivateKey(BinaryData("1e99423a4ed27608a15a2616a2b0e9e52ced330ac530edcc32c8ffc6a526aedd"), compressed = true)
-priv: fr.acinq.bitcoin.Crypto.PrivateKey = 1e99423a4ed27608a15a2616a2b0e9e52ced330ac530edcc32c8ffc6a526aedd01
+priv: fr.acinq.qtum.Crypto.PrivateKey = 1e99423a4ed27608a15a2616a2b0e9e52ced330ac530edcc32c8ffc6a526aedd01
 
 scala> val priv = PrivateKey(BinaryData("1e99423a4ed27608a15a2616a2b0e9e52ced330ac530edcc32c8ffc6a526aedd"), compressed = false)
-priv: fr.acinq.bitcoin.Crypto.PrivateKey = 1e99423a4ed27608a15a2616a2b0e9e52ced330ac530edcc32c8ffc6a526aedd
+priv: fr.acinq.qtum.Crypto.PrivateKey = 1e99423a4ed27608a15a2616a2b0e9e52ced330ac530edcc32c8ffc6a526aedd
 
 scala> val pubUncompressed = priv.publicKey
-pubUncompressed: fr.acinq.bitcoin.Crypto.PublicKey = 04f028892bad7ed57d2fb57bf33081d5cfcf6f9ed3d3d7f159c2e2fff579dc341a07cf33da18bd734c600b96a72bbc4749d5141c90ec8ac328ae52ddfe2e505bdb
+pubUncompressed: fr.acinq.qtum.Crypto.PublicKey = 04f028892bad7ed57d2fb57bf33081d5cfcf6f9ed3d3d7f159c2e2fff579dc341a07cf33da18bd734c600b96a72bbc4749d5141c90ec8ac328ae52ddfe2e505bdb
 
 scala> Base58Check.encode(Base58.Prefix.PubkeyAddress, pubUncompressed.hash160)
 res0: String = 1424C2F4bC9JidNjjTUZCbUxv6Sa1Mt62x
 
 scala> val pubCompressed = priv.publicKey.copy(compressed = true)
-pubCompressed: fr.acinq.bitcoin.Crypto.PublicKey = 03f028892bad7ed57d2fb57bf33081d5cfcf6f9ed3d3d7f159c2e2fff579dc341a
+pubCompressed: fr.acinq.qtum.Crypto.PublicKey = 03f028892bad7ed57d2fb57bf33081d5cfcf6f9ed3d3d7f159c2e2fff579dc341a
 
 scala> Base58Check.encode(Base58.Prefix.PubkeyAddress, pubCompressed.hash160)
 res1: String = 1J7mdg5rbQyUHENYdx39WVWK7fsLpEoXZy
@@ -125,11 +125,11 @@ res3: String = KxFC1jmwwCoACiCAWZ3eXa96mBM6tb3TYzGmf6YwgdGWZgawvrtJ
 
 ### Building and verifying transactions
 
-The Transaction class can be used to create, serialize, deserialize, sign and validate bitcoin transactions.
+The Transaction class can be used to create, serialize, deserialize, sign and validate qtum transactions.
 
 #### P2PKH transactions
 
-A P2PKH transactions sends bitcoins to a public key hash, using a standard P2PKH script:
+A P2PKH transactions sends qtums to a public key hash, using a standard P2PKH script:
 ``` scala
 val pkh = pubKey.hash160
 val pubKeyScript = OP_DUP :: OP_HASH160 :: OP_PUSHDATA(pkh) :: OP_EQUALVERIFY :: OP_CHECKSIG :: Nil
@@ -179,7 +179,7 @@ This sample demonstrates how to serialize, create and verify simple P2PKH transa
 
 #### P2SH transactions
 
-A P2SH transactions sends bitcoins to a script hash:
+A P2SH transactions sends qtums to a script hash:
 ```scala
 val redeemScript = Script.createMultiSigMofN(2, Seq(pub1, pub2, pub3 ))
 val multisigAddress = Crypto.hash160(redeemScript)
@@ -402,23 +402,23 @@ This sample demonstrates how to serialize, create and verify a P2WPSH transactio
 
 ### Wallet features
 
-Bitcoin-lib provides and simple and complete implementation of BIP32 and BIP39.
+qtum-lib provides and simple and complete implementation of BIP32 and BIP39.
 
 #### HD Wallet (BIP32)
 
-Let's play with the scala console and the first test vector from https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
+Let's play with the scala console and the first test vector from https://github.com/qtum/bips/blob/master/bip-0032.mediawiki
 
 ```shell
 mvn scala:console
 [INFO] Scanning for projects...
 [INFO]
 [INFO] ------------------------------------------------------------------------
-[INFO] Building bitcoin-lib 0.9.4-SNAPSHOT
+[INFO] Building qtum-lib 0.9.4-SNAPSHOT
 [INFO] ------------------------------------------------------------------------
 [INFO]
-[INFO] --- scala-maven-plugin:3.2.0:console (default-cli) @ bitcoin-lib_2.11 ---
+[INFO] --- scala-maven-plugin:3.2.0:console (default-cli) @ qtum-lib_2.11 ---
 [WARNING]  Expected all dependencies to require Scala version: 2.11.4
-[WARNING]  fr.acinq:bitcoin-lib_2.11:0.9.4-SNAPSHOT requires scala version: 2.11.4
+[WARNING]  fr.acinq:qtum-lib_2.11:0.9.4-SNAPSHOT requires scala version: 2.11.4
 [WARNING]  com.github.scopt:scopt_2.11:3.2.0 requires scala version: 2.11.0
 [WARNING] Multiple versions of scala libraries detected!
 [WARNING] scala-maven-plugin cannot fork scala console!!  Running in process
@@ -426,29 +426,29 @@ Welcome to Scala version 2.11.1 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_3
 Type in expressions to have them evaluated.
 Type :help for more information.
 
-scala> import fr.acinq.bitcoin._
-import fr.acinq.bitcoin._
+scala> import org.qtumproject.qtum._
+import org.qtumproject.qtum._
 
-scala> import fr.acinq.bitcoin.DeterministicWallet
+scala> import org.qtumproject.qtum.DeterministicWallet
 DeterministicWallet   DeterministicWalletSpec
 
-scala> import fr.acinq.bitcoin.DeterministicWallet._
-import fr.acinq.bitcoin.DeterministicWallet._
+scala> import org.qtumproject.qtum.DeterministicWallet._
+import org.qtumproject.qtum.DeterministicWallet._
 
 scala> val m = generate(fromHexString("000102030405060708090a0b0c0d0e0f"))
-m: fr.acinq.bitcoin.DeterministicWallet.ExtendedPrivateKey = ExtendedPrivateKey(e8f32e723decf4051aefac8e2c93c9c5b214313817cdb01a1494b917c8436b35,873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508,0,m,0)
+m: fr.acinq.qtum.DeterministicWallet.ExtendedPrivateKey = ExtendedPrivateKey(e8f32e723decf4051aefac8e2c93c9c5b214313817cdb01a1494b917c8436b35,873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508,0,m,0)
 
 scala> encode(m, false)
 res1: String = xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHi
 
 scala> publicKey(m)
-res2: fr.acinq.bitcoin.DeterministicWallet.ExtendedPublicKey = ExtendedPublicKey(0339a36013301597daef41fbe593a02cc513d0b55527ec2df1050e2e8ff49c85c2,873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508,0,m,0)
+res2: fr.acinq.qtum.DeterministicWallet.ExtendedPublicKey = ExtendedPublicKey(0339a36013301597daef41fbe593a02cc513d0b55527ec2df1050e2e8ff49c85c2,873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508,0,m,0)
 
 scala> encode(publicKey(m), false)
 res3: String = xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8NqtwybGhePY2gZ29ESFjqJoCu1Rupje8YtGqsefD265TMg7usUDFdp6W1EGMcet8
 
 scala> val priv = derivePrivateKey(m, hardened(0) :: 1L :: hardened(2) :: 2L :: Nil)
-priv: fr.acinq.bitcoin.DeterministicWallet.ExtendedPrivateKey = ExtendedPrivateKey(0f479245fb19a38a1954c5c7c0ebab2f9bdfd96a17563ef28a6a4b1a2a764ef4,cfb71883f01676f587d023cc53a35bc7f88f724b1f8c2892ac1275ac822a3edd,4,m/0h/1/2h/2,4001020172)
+priv: fr.acinq.qtum.DeterministicWallet.ExtendedPrivateKey = ExtendedPrivateKey(0f479245fb19a38a1954c5c7c0ebab2f9bdfd96a17563ef28a6a4b1a2a764ef4,cfb71883f01676f587d023cc53a35bc7f88f724b1f8c2892ac1275ac822a3edd,4,m/0h/1/2h/2,4001020172)
 
 scala> encode(priv, false)
 res5: String = xprvA2JDeKCSNNZky6uBCviVfJSKyQ1mDYahRjijr5idH2WwLsEd4Hsb2Tyh8RfQMuPh7f7RtyzTtdrbdqqsunu5Mm3wDvUAKRHSC34sJ7in334
@@ -457,15 +457,15 @@ scala> encode(publicKey(priv), false)
 res6: String = xpub6FHa3pjLCk84BayeJxFW2SP4XRrFd1JYnxeLeU8EqN3vDfZmbqBqaGJAyiLjTAwm6ZLRQUMv1ZACTj37sR62cfN7fe5JnJ7dh8zL4fiyLHV
 
 scala> val k2 = derivePrivateKey(m, hardened(0) :: 1L :: hardened(2) :: Nil)
-k2: fr.acinq.bitcoin.DeterministicWallet.ExtendedPrivateKey = ExtendedPrivateKey(cbce0d719ecf7431d88e6a89fa1483e02e35092
+k2: fr.acinq.qtum.DeterministicWallet.ExtendedPrivateKey = ExtendedPrivateKey(cbce0d719ecf7431d88e6a89fa1483e02e35092
 af60c042b1df2ff59fa424dca,04466b9cc8e161e966409ca52986c584f07e9dc81f735db683c3ff6ec7b1503f,3,m/0h/1/2h,3203769081)
 
 scala> val K2 = publicKey(k2)
-K2: fr.acinq.bitcoin.DeterministicWallet.ExtendedPublicKey = ExtendedPublicKey(0357bfe1e341d01c69fe5654309956cbea516822f
+K2: fr.acinq.qtum.DeterministicWallet.ExtendedPublicKey = ExtendedPublicKey(0357bfe1e341d01c69fe5654309956cbea516822f
 ba8a601743a012a7896ee8dc2,04466b9cc8e161e966409ca52986c584f07e9dc81f735db683c3ff6ec7b1503f,3,m/0h/1/2h,3203769081)
 
 scala> derivePublicKey(K2, 2L :: 1000000000L :: Nil)
-res8: fr.acinq.bitcoin.DeterministicWallet.ExtendedPublicKey = ExtendedPublicKey(022a471424da5e657499d1ff51cb43c47481a03b1e77f951fe64cec9f5a48f7011,c783e67b921d2beb8f6b389cc646d7263b4145701dadd2161548a8b078e65e9e,5,m/0h/1/2h/2/1000000000,3632322520)
+res8: fr.acinq.qtum.DeterministicWallet.ExtendedPublicKey = ExtendedPublicKey(022a471424da5e657499d1ff51cb43c47481a03b1e77f951fe64cec9f5a48f7011,c783e67b921d2beb8f6b389cc646d7263b4145701dadd2161548a8b078e65e9e,5,m/0h/1/2h/2/1000000000,3632322520)
 
 scala> encode(derivePublicKey(K2, 2L :: 1000000000L :: Nil), false)
 res10: String = xpub6H1LXWLaKsWFhvm6RVpEL9P4KfRZSW7abD2ttkWP3SSQvnyA8FSVqNTEcYFgJS2UaFcxupHiYkro49S8yGasTvXEYBVPamhGW6cFJodrTHy
@@ -479,12 +479,12 @@ mvn scala:console
 [INFO] Scanning for projects...
 [INFO]
 [INFO] ------------------------------------------------------------------------
-[INFO] Building bitcoin-lib 0.9.4-SNAPSHOT
+[INFO] Building qtum-lib 0.9.4-SNAPSHOT
 [INFO] ------------------------------------------------------------------------
 [INFO]
-[INFO] --- scala-maven-plugin:3.2.0:console (default-cli) @ bitcoin-lib_2.11 ---
+[INFO] --- scala-maven-plugin:3.2.0:console (default-cli) @ qtum-lib_2.11 ---
 [WARNING]  Expected all dependencies to require Scala version: 2.11.6
-[WARNING]  fr.acinq:bitcoin-lib_2.11:0.9.4-SNAPSHOT requires scala version: 2.11.6
+[WARNING]  fr.acinq:qtum-lib_2.11:0.9.4-SNAPSHOT requires scala version: 2.11.6
 [WARNING]  org.json4s:json4s-jackson_2.11:3.2.11 requires scala version: 2.11.0
 [WARNING] Multiple versions of scala libraries detected!
 [WARNING] scala-maven-plugin cannot fork scala console!!  Running in process
@@ -492,8 +492,8 @@ Welcome to Scala version 2.11.6 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_4
 Type in expressions to have them evaluated.
 Type :help for more information.
 
-scala> import fr.acinq.bitcoin._
-import fr.acinq.bitcoin._
+scala> import org.qtumproject.qtum._
+import org.qtumproject.qtum._
 
 scala> import MnemonicCode._
 import MnemonicCode._
@@ -502,6 +502,6 @@ scala> val mnemonics = toMnemonics(fromHexString("77c2b00716cec7213839159e404db5
 mnemonics: List[String] = List(jelly, better, achieve, collect, unaware, mountain, thought, cargo, oxygen, act, hood, bridge)
 
 scala> val key:BinaryData = toSeed(mnemonics, "TREZOR")
-key: fr.acinq.bitcoin.BinaryData = b5b6d0127db1a9d2226af0c3346031d77af31e918dba64287a1b44b8ebf63cdd52676f672a290aae502472cf2d602c051f3e6f18055e84e4c43
+key: fr.acinq.qtum.BinaryData = b5b6d0127db1a9d2226af0c3346031d77af31e918dba64287a1b44b8ebf63cdd52676f672a290aae502472cf2d602c051f3e6f18055e84e4c43
 897fc4e51a6ff
 ```
